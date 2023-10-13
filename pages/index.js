@@ -14,10 +14,10 @@ export async function getServerSideProps(context) {
   const PING_INTERVAL_MS = 120000;
 
 
-  function pingWebsite() {
+  async function pingWebsite() {
     console.log(`Pinging ${new Date()}`);
 
-    axios.get(WEBSITE_URL)
+   await axios.get(WEBSITE_URL)
         .then(response => {
             console.log(`Ping successful at ${new Date()}`);
         })
@@ -25,7 +25,7 @@ export async function getServerSideProps(context) {
             console.error(`Failed to ping ${WEBSITE_URL}. Error: ${error.message}`);
         });
 }
-pingWebsite();
+await pingWebsite();
   return {
    props:{}
   };

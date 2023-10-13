@@ -1,5 +1,4 @@
 // server.js
-import axios from 'axios';
 
 const { createServer } = require('http');
 const { parse } = require('url');
@@ -8,6 +7,7 @@ const next = require('next');
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+const axios = require('axios');
 
 app.prepare().then(() => {
 
@@ -15,10 +15,10 @@ app.prepare().then(() => {
     const PING_INTERVAL_MS = 120000;
   
   
-    function pingWebsite() {
+    async function pingWebsite() {
       console.log(`Pinging ${new Date()}`);
   
-      axios.get(WEBSITE_URL)
+     await axios.get(WEBSITE_URL)
           .then(response => {
               console.log(`Ping successful at ${new Date()}`);
           })
@@ -26,13 +26,13 @@ app.prepare().then(() => {
               console.error(`Failed to ping ${WEBSITE_URL}. Error: ${error.message}`);
           });
   }
-  createServer((req, res) => {
+  createServer(async (req, res) => {
     const parsedUrl = parse(req.url, true);
     const { pathname, query } = parsedUrl;
 
     if (req.method === 'HEAD') {
       // Handle HEAD request here
-      pingWebsite();
+      await pingWebsite();
       console.log('Received a HEAD request');
       // Send the response without content for HEAD requests
       res.end();
